@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+{% load staticfiles %}
+
+<head>
+    <meta charset="UTF-8">
+    <title>智能搜索引擎</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="{% static 'plugins/bootstrap-4.4.1-dist/css/bootstrap.css' %}">
+    <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon"/>
+    <link rel="stylesheet" href="{% static 'fonts/zico/css/zico.min.css' %}"/>
+    <link rel="stylesheet" href="{% static 'plugins/pagination/pagination.css' %}"/>
+    <link rel="stylesheet" href="{% static 'css/search_result.css' %}"/>
+</head>
+<body class="clear-padding">
+
+<header id="zw_header">
+    <div class="top-bar d-none d-sm-block d-md-block text-center">
+        <div class="container-fluid clear-padding">
+            <div class="row">
+                <div class="top-bar-1 col-md-2 clear-padding" style="height: 100%;">
+                    <i class="zi zi_globe"></i>
+                    <a href="/">
+                        <span>整合全球信息资源</span>
+                    </a>
+                </div>
+                <div class="top-bar-1 col-md-8">
+
+                    <div class="input-group" style="margin-top: 10px">
+                        <input type="text" class="form-control" placeholder="nlp" aria-label="Recipient's username"
+                               aria-describedby="basic-addon2" name="keywords" id="search_input">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button" onclick="add_search()">搜索一下</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="top-bar-1 col-md-2">
+                    <i class="zi zi_searchBlack"></i>
+                    <span class="font-weight-bold text-primary">垂直搜索引擎</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<sec id="zw_body">
+    <div class="d-none d-sm-none d-md-block">
+        <div class="container-fluid clear-padding">
+            <div class="row" style="margin-bottom: 10px">
+                <div id="zw_nav" class="col-md-2 clear-padding" style="height: 100%;">
+                    <ul class="nav flex-column flex-sm">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#">nlpjob ({{ nlpjob_count }})</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Boss直聘 (19862) </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">51job (15898) </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link disabled" href="#">其他 (29086)</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-10">
+                    <div class="resultArea">
+                        <p class="resultTotal">
+                    <span class="info">找到约&nbsp;<span class="totalResult">{{ total_nums }}</span>&nbsp;条结果(用时<span
+                            class="time">{{ last_time }}</span>秒)，共约<span
+                            class="totalPage">{{ page_nums }}</span>页</span>
+                        </p>
+                        <div class="resultList">
+                            {% for hit in all_hits %}
+                                <div class="resultItem" style="margin-bottom: 10px">
+                                    <div class="itemHead">
+                                        <a href="{{ hit.url }}" target="_blank" class="title">
+                                            {% autoescape off %}{{ hit.title }}{% endautoescape %}</a>
+                                        <span class="divsion">-</span>
+                                        <span class="fileType">
+                                    <span class="label">来源：</span>
+                                    <span class="value">NLPJOB</span>
+                                </span>
+                                        <span class="dependValue">
+                                    <span class="label">得分：</span>
+                                    <span class="value">{{ hit.score }}</span>
+                                </span>
+                                    </div>
+                                    <div class="itemBody">
+                                        {% autoescape off %}{{ hit.job_description }}{% endautoescape %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+
+                        </div>
+                        <div class="pagination"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</sec>
+
+
+<script src="{% static 'plugins/jquery-3.4.1-dist/jquery.js' %}"></script>
+<script src="{% static 'plugins/pagination/jquery.pagination.js' %}"></script>
+<script src="{% static 'plugins/popper.js-1.16.0-dist/popper.js' %}" type="module"></script>
+<script src="{% static 'plugins/bootstrap-4.4.1-dist/js/bootstrap.js' %}"></script>
+<script type="text/javascript">
+    var search_url = "{% url 'search' %}"
+
+    $(".pagination").pagination({{ total_nums }}, {
+        current_page: {{ page }}, //当前页码
+        items_per_page: 10,
+        display_msg: true,
+        {#load_first_page:false,#}
+        callback: pageselectCallback
+    });
+
+    function pageselectCallback(page_id) {
+        {#alert(page_id)#}
+        {#alert({{ page }})#}
+        if (page_id == {{ page }}) return
+        window.location.href = search_url + '?q={{ key_words }}' + '&p=' + page_id
+    }
+
+    function add_search() {
+        var val = document.getElementById("search_input").value;
+        window.location.href = search_url + '?q=' + val + "&s_type=jobinfo"
+    }
+
+</script>
+</body>
+</html>
+
+
