@@ -1,5 +1,4 @@
-**jobsearch,elasticsearch, django,bootstrap,pagination,jquery**
-[========]
+**jobsearch,elasticsearch, django,bootstrap,pagination,jquery**  
 *In advance, give many thanks to related tutor's precious work.*
 =================================================================
 For reservation and technical communication.
